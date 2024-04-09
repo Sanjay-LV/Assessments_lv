@@ -1,0 +1,35 @@
+INTERNAL ASSESMENT-1-SQL
+
+1. select CustomerID from CustomerInteractions where Month="March" group by CustomerId having sum(DataUsed)>avg(DataUsed);
+
+2.select CustomerID from CustomerInteractions where (select sum(CallDuration) where Month="March")>(select sum(CallDuration) where Month="February");
+
+3.
+
+4.i)select ProductTypeID,sum(TotalSalesAmount) as Total_amount_eachtype from QuarterlySales group by  ProductTypeID
+								order by Total_amount_eachtype desc;  --Total sales per product type
+select ProductTypeID,sum(TotalSalesAmount) as Total_amount_eachtype from QuarterlySales group by  ProductTypeID
+								order by Total_amount_eachtype desc; --Total units sold per product type
+			
+select ProductTypeID,sum(UnitsSold) as Total_units_eachtype from QuarterlySales group by  ProductTypeID
+								order by Total_amount_eachtype desc; --Total sales per product type in each quarter
+
+ii)select ProductTypeID,sum(TotalSalesAmount) as Total_amount from QuarterlySales where ProductTypeID=1;
+
+5.select ProductTypeID,Quarter,sum(TotalSalesAmount) as Total_amount_eachtype from QuarterlySales where Quarter="Q1"  group by  ProductTypeID order by Total_amount_eachtype desc limit 1;
+
+6.select TotalSalesAmount/UnitsSold as avg_price_per_unit from QuarterlySales where ProductTypeID=1 and Quarter="Q2";
+
+7.select Region from SectorEnergyConsumption where Month="March" and EnergySource="Solar" or EnergySource="Wind"
+and ConsumptionKWh>(select sum(ConsumptionKWh) from SectorEnergyConsumption  where EnergySource="Wind" or EnergySource="Solar")/(select count(*) from SectorEnergyConsumption where EnergySource="Wind" or EnergySource="Solar");
+
+8.select Sector,ConsumptionKWh,Month as total_energy from SectorEnergyConsumption where (select sum(ConsumptionKWh) from SectorEnergyConsumption where Month="March")>(select sum(ConsumptionKWh) from SectorEnergyConsumption where Month="February");
+
+
+9.select EnergySource,sum(ConsumptionKWh) as Total_energy from SectorEnergyConsumption where Month="February" group by EnergySource with rollup order by Total_energy desc;
+
+10.select CustomerName from InsuranceActivities where Investigation="No" AND FeedbackScore>(SELECT sum(FeedbackScore) from InsuranceActivities)/(select count(*) from  InsuranceActivities) ;
+
+11.select sum(AnnualPremium) from InsuranceActivities where ClaimsCount>=1 and  FeedbackScore>(SELECT sum(FeedbackScore) from InsuranceActivities)/(select count(*) from  InsuranceActivities) ;
+
+12.select avg(FeedbackScore) as avg_satisfac from InsuranceActivities group by PolicyType order by avg_satisfac desc;
