@@ -1,0 +1,43 @@
+INTERNAL ASSESMENT-2
+
+LAB SECTION-1:
+1) select machine_id from L1_maintenance_records where month(maintenance_date)=03 and 
+cost>(select avg(cost) from L1_maintenance_records where month(maintenance_date)=03);
+
+2)Select maintenance_type,count(maintenance_type) as no_of_maintain_type_in_march from L1_maintenance_records where month(maintenance_date)=03 group by maintenance_id;
+
+3)select technician_name,count(technician_name) from L1_maintenance_records group by maintenance_type
+		having cost>avg(cost);
+
+LAB SECTION-2:
+4)select (sum(incident_count_pre_update)-sum(incident_count_post_update)) from l2_updates 
+		group by product_id;
+
+5)SELECT update_id from l2_updates where user_feedback_score= (select max(user_feedback_score) from l2_updates);
+
+6)NA
+
+LAB SECTION-3:
+
+7)create  view compre_patient_records as select *
+	from L3_patients join l3_visits using(patient_id) join l3_treatments using(visit_id)
+        join l3_facilities using(facility_id);
+
+select  patient_name,facility_name,reason_for_visit,outcome 
+from compre_patient_records where insurance_provider="HealthCare Inc.";
+
+8)SELECT count(facility_name) as cases_attended,facility_name from l3_facilities join l3_visits using(facility_id) 
+	where reason_for_visit="Emergency" and month(visit_date)=03 group by facility_name order by cases_attended desc limit 1;
+
+9)select insurance_provider from l3_patients join l3_visits using(patient_id) join l3_treatments using(visit_id) 
+where month(visit_date) between 1 and 3
+and outcome="Complicated";
+
+LAB SECTION-4:
+
+10) select (price*quantity) as total_sales,product_name,quantity,category from l4_products 
+join l4_sales using(product_id) order by total_sales desc limit 3 ;
+
+11)NA
+
+12)select * from l4_products  join l4_sales join l4_stores;
