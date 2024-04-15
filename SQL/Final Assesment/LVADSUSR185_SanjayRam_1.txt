@@ -1,0 +1,73 @@
+FINAL ASSESMENT-SQL
+
+1.select product_category,avg(sales_amount) as average_amt 
+from (select * from sales_records join products using(product_id) 
+where sales_date=date_sub(sales_date,interval 30 day)) as w
+group by product_category;
+
+2.select product_id,product_name,sum(sales_amount) as Total_sales_amt from sales_records join products using(product_id) 
+group by product_name,product_id order by Total_sales_amt desc limit 3 ;
+
+3.select product_id,customer_id,(concat((percent_rank() over(order by sales_amount))*100,"%")),
+	   rank() over (order by sales_amount)
+from sales_records;
+
+4. with count_cus as(
+ select *  from sales_records s left join customers c using(customer_id)
+ where sales_date>=date_sub(curdate(),interval 6 month))
+ select customer_id,customer_name from count_cus group by customer_id having count(customer_id)>=4;
+
+5.select departure_airport,arrival_airport,avg(ticket_price) from tickets join flights using(flight_id)
+group by flight_id;
+
+6.select departure_date,flight_number,sum(ticket_price) as total_price,count(ticket_id) as ticket_sales
+from tickets join flights using(flight_id) where ticket_date>=date_sub(curdate(),interval 1 month)
+group by flight_number,departure_date order by ticket_sales desc ; 
+
+7.select passenger_name,sum(ticket_price) as total_spent_amt,frequent_flyer_status 
+ from tickets join passengers using(passenger_id)
+ group by passenger_id order by total_spent_amt desc limit 5;
+
+8. select count(ticket_id) as total_tickets_sold_per_month,month(ticket_date) as Month 
+ from tickets group by month(ticket_date) order by total_tickets_sold_per_month desc;
+
+9.select minute(datediff('2023-01-20','2023-02-01'))  from playerscores;
+
+10.select count(player_id),game_name from playerscores join games using(game_id) group by game_name
+order by count(player_id) limit 3;
+
+11.
+
+select avg(score),max(score) from playerscores join games  using(game_id) group by game_name
+order by count(player_id);
+
+12.NA
+
+
+13.select doctor_id,doctor_name,sum(cost) as total_cost from treatments join doctors using(doctor_id)
+group by doctor_id order by total_cost desc limit 5;
+
+14.select treatment_name,cost,(cost/(select sum(cost) from treatments))*100 as con_per from treatments
+order by cost desc;
+
+15.select p1.patient_id,p1.patient_name,p1.admission_date,p1.discharge_date
+from patients p1 join patients p2 where p1.admission_date between p2.discharge_date and
+date_add(p2.discharge_date,interval 30 day) and p1.patient_name=p2.patient_name order by p1.admission_date;
+
+16.select gender,diagnosis,concat(datediff(discharge_date,admission_date)," ","days") as LOS from patients;
+
+17.select distinct department,semester,
+avg(grade) over(partition by semester,department order by department,semester)
+from enrollments join courses using(course_id);
+
+18.select count(student_id),department from enrollments join courses using(course_id) group by course_id union
+select count(student_id),department,enrollment_year 
+from students s join ((select count(student_id),department from enrollments join courses using(course_id) group by course_id))
+ n on s.major=n.department ;
+
+19.select student_id,student_name,semester,sum(credits) 
+from students join enrollments using(student_id) join courses using(course_id)
+group by semester,student_id having sum(credits)>=50;
+
+20.select course_name,enrollment_year,count(student_id) from students join enrollments using(student_id) join courses using(course_id)
+group by course_id,enrollment_year order by enrollment_year desc;
